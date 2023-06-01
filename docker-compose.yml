@@ -1,0 +1,35 @@
+version: '3'
+services:
+  homeassistant:
+    logging: # https://docs.docker.com/compose/compose-file/#loggin
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    ports:
+      - "8123:8123"
+    environment:
+      - TZ=NO
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true    
+  node-red:
+    build:
+      context: .
+      dockerfile: Dockerfile.node-red
+    #image: nodered/node-red:latest
+    container_name: node-red
+    restart: unless-stopped
+    volumes:
+      - ./node-red:/data
+    ports:
+      - 1880:1880
+    environment:
+      - TZ=NO
+
+  #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwOWMwNTVlMDA4YmI0MmM3OTY0NmU3MzAxNjdmNmFhOCIsImlhdCI6MTY4NTU5ODQwOSwiZXhwIjoyMDAwOTU4NDA5fQ.UVDhOuIqzFWEP2vXdSZDwrBsUihQFdwdONRpFDaWjKg
+
